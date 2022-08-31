@@ -9,9 +9,12 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
+import { useToast } from '@chakra-ui/react';
 
 const Signup = () => {
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const [data, setData] = useState({
     name: '',
     email: '',
@@ -22,7 +25,25 @@ const Signup = () => {
   const onChangeFun = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-  const postDetails = (pics) => {};
+  const postDetails = (pics) => {
+    setLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: 'image is undefined.',
+        description: 'upload your image.',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    if (pics.type === 'image/jpeg' || pics.type === 'image/png') {
+      const data = new FormData();
+      data.append('file', pics);
+      data.append('upload_preset', 'chat_app');
+      data.append('cloud_name', 'dmn8c8zmh');
+      fetch('');
+    }
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();

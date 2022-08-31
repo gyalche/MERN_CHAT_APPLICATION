@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const userSchema = mongoose.schema(
+const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -8,6 +8,7 @@ const userSchema = mongoose.schema(
     },
     email: {
       type: String,
+      unique: true,
       required: true,
     },
     password: {
@@ -16,7 +17,6 @@ const userSchema = mongoose.schema(
     },
     pic: {
       type: String,
-      required: true,
       default:
         'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg',
     },
