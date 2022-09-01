@@ -11,12 +11,10 @@ const app = express();
 dotenv.config();
 app.use(cors());
 app.use(morgan('dev'));
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-//end points;
-app.use('/api/user', userRoutes);
 
 //error handling;
 //for not found routes;
@@ -24,6 +22,8 @@ app.use(notFound);
 //for other error ;
 app.use(errorHandler);
 
+//end points;
+app.use('/api/user', userRoutes);
 connectDB();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, function () {

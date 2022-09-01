@@ -3,8 +3,6 @@ import User from '../models/userModel.js';
 import bcrypt from 'bcrypt';
 import generateToken from '../config/generateToken.js';
 export const registerUser = asyncHandler(async (req, res) => {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
   const { name, email, password, pic } = req.body;
 
   if (!name || !email || !password) {
@@ -22,7 +20,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
-    password: hashedPassword,
+    password,
     pic,
   });
 
@@ -31,7 +29,7 @@ export const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      password: user.password,
+      isAdmin: user.isAdmin,
       pic: user.pic,
       token: generateToken(user._id),
     });
@@ -43,21 +41,22 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
   const user = await User.findOne({ email });
-  if (user) {
-    const validate = await bcrypt.compare(password, user.password);
-    if (validate) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        pic: user.pic,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.json('password is incorrect');
-    }
+
+  if (user && (await user.matchPassword(password))) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      pic: user.pic,
+      token: generateToken(user._id),
+    });
   } else {
-    res.json('invalid credentials');
+    res.status(401);
+    throw new Error('Invalid Email or Password');
   }
 });
+
+export const allUsers = asyncHandler(async (req, res) => {});

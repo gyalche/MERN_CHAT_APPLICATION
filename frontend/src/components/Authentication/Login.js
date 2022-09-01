@@ -6,13 +6,36 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-
+import axios from '../../axios';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      alert('email or password is required');
+      setLoading(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: { 'Content-Type': 'application/json' },
+      };
+      const { data } = await axios.post(
+        '/api/user/login',
+        { email, password },
+        config
+      );
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      navigate('/chats');
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
   return (
     <VStack spacing={5} color='black'>
