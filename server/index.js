@@ -5,6 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
 import userRoutes from './Routes/userRoutes.js';
+import chatRoutes from './Routes/chatRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(errorHandler);
 
 //end points;
 app.use('/api/user', userRoutes);
+app.use('/api/chat', chatRoutes);
 connectDB();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, function () {
